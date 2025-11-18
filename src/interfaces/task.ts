@@ -14,7 +14,7 @@ export enum TaskLevel {
     HIGH = 'high',
 }
 export enum TaskStatus {
-    PENDING = 'pending',
+    NOT_STARTED = 'not_started',
     IN_PROGRESS = 'in_progress',
     COMPLETED = 'completed',
 }

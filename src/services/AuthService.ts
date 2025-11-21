@@ -1,4 +1,4 @@
-import type { CreateUserDto, LoginDto, User , UserResponseDto} from "../interfaces/user.js";
+import type { AuthResponseDto, CreateUserDto, LoginDto, User , UserResponseDto} from "../interfaces/user.js";
 import { prisma } from "../config/prisma.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -35,9 +35,9 @@ export class AuthService {
       }
         const token = this.generateToken(user.id);
       return {
-        user: user as UserResponseDto,
+        user: user,
         token,
-      };
+      } as AuthResponseDto;
     } catch (error) {
       throw error;
     }
@@ -49,13 +49,13 @@ export class AuthService {
         }
         return jwt.sign({ userId }, secret, { expiresIn: "30d" });
     }
-    verifyToken(token: string): string {
+    verifyToken(token: string): { userId: string } {
         const secret = process.env.JWT_SECRET as string
         if (!secret) {
             throw new Error("JWT_SECRET is not set");
         }
         try {
-            return jwt.verify(token, secret) as string ;
+            return jwt.verify(token, secret) as { userId: string } ;
         } catch (error) {
             throw new Error("Invalid token");
         }

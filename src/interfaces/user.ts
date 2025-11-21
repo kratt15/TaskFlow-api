@@ -19,3 +19,8 @@ export type PublicUserDto = Pick<User, 'id' | 'username'>;
 //Dto pour l'auth
 export type LoginDto = Pick<User, 'email' | 'password'>;
 export type RegisterDto = CreateUserDto;
+
+export type AuthResponseDto = {
+    user: UserResponseDto;
+    token: string;
+};

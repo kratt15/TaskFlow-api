@@ -1,0 +1,179 @@
+### Variables
+@baseUrl = http://localhost:3500
+@apiVersion = /api/v1
+@contentType = application/json
+
+### Variables pour les tokens (seront remplis après login)
+@authToken = 
+
+### ============================================
+### TESTS D'AUTHENTIFICATION
+### ============================================
+
+### 1. Test de santé du serveur
+GET {{baseUrl}}{{apiVersion}}/health
+
+### ============================================
+### INSCRIPTION (REGISTER)
+### ============================================
+
+### 2. Inscription - Succès
+POST {{baseUrl}}{{apiVersion}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 3. Inscription - Email déjà utilisé (erreur 409)
+POST {{baseUrl}}{{apiVersion}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser2",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 4. Inscription - Username déjà utilisé (erreur 409)
+POST {{baseUrl}}{{apiVersion}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "email": "test2@example.com",
+  "password": "password123"
+}
+
+### 5. Inscription - Validation erreur (email invalide)
+POST {{baseUrl}}{{apiVersion}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser3",
+  "email": "email-invalide",
+  "password": "password123"
+}
+
+### 6. Inscription - Validation erreur (mot de passe trop court)
+POST {{baseUrl}}{{apiVersion}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser3",
+  "email": "test3@example.com",
+  "password": "short"
+}
+
+### 7. Inscription - Validation erreur (username trop court)
+POST {{baseUrl}}{{apiVersion}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "ab",
+  "email": "test4@example.com",
+  "password": "password123"
+}
+
+### ============================================
+### CONNEXION (LOGIN)
+### ============================================
+
+### 8. Connexion - Succès
+# @name login
+POST {{baseUrl}}{{apiVersion}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 9. Connexion - Utilisateur inexistant (erreur 401)
+POST {{baseUrl}}{{apiVersion}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "inexistant@example.com",
+  "password": "password123"
+}
+
+### 10. Connexion - Mot de passe incorrect (erreur 401)
+POST {{baseUrl}}{{apiVersion}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "mauvaispassword"
+}
+
+### 11. Connexion - Validation erreur (email invalide)
+POST {{baseUrl}}{{apiVersion}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "email-invalide",
+  "password": "password123"
+}
+
+### 12. Connexion - Validation erreur (champs manquants)
+POST {{baseUrl}}{{apiVersion}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com"
+}
+
+### ============================================
+### PROFIL UTILISATEUR (GET ME)
+### ============================================
+
+### 13. Obtenir le profil - Succès (avec token)
+# Remplacez {{authToken}} par le token obtenu lors du login
+# Ou utilisez la variable @authToken définie ci-dessus
+GET {{baseUrl}}{{apiVersion}}/auth/me
+Authorization: Bearer {{authToken}}
+
+### 14. Obtenir le profil - Sans token (erreur 401)
+GET {{baseUrl}}{{apiVersion}}/auth/me
+
+### 15. Obtenir le profil - Token invalide (erreur 403)
+GET {{baseUrl}}{{apiVersion}}/auth/me
+Authorization: Bearer token_invalide_ici
+
+### 16. Obtenir le profil - Token expiré (erreur 403)
+GET {{baseUrl}}{{apiVersion}}/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ0ZXN0IiwiaWF0IjoxNjAwMDAwMDAwLCJleHAiOjE2MDAwMDAwMDB9.invalid
+
+### ============================================
+### WORKFLOW COMPLET
+### ============================================
+
+### 17. Workflow complet : Inscription -> Login -> GetMe
+### Étape 1 : Inscription
+# @name registerUser
+POST {{baseUrl}}{{apiVersion}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "newuser2",
+  "email": "newuser@example.com",
+  "password": "password123"
+}
+
+### Étape 2 : Connexion (copiez le token de la réponse)
+# @name loginUser
+POST {{baseUrl}}{{apiVersion}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "newuser@example.com",
+  "password": "password123"
+}
+
+### Étape 3 : Obtenir le profil (collez le token ici)
+GET {{baseUrl}}{{apiVersion}}/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1N2U2YjE5ZC0wODVmLTQ3NTAtOTM1My1mNDUzNTVhMWQ0YTciLCJpYXQiOjE3NjM3MjkxMjgsImV4cCI6MTc2NjMyMTEyOH0.NmkZdu62OXsi7S64l8NvgatDCcdLgPHls1_gyiCsYOg
+

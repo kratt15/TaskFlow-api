@@ -1,14 +1,23 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const createUserSchema = z.object({
-    username: z.string('Username is required').min(3).max(20),
-    email: z.email('Email is required'),
-    password: z.string('Password is required').min(8).max(32),
+  username: z
+    .string("Username is required")
+    .min(3, "Username must be at least 3 characters")
+    .max(20, "Username must be at most 20 characters"),
+  email: z.string("Email is required").email("Invalid email format"),
+  password: z
+    .string("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .max(32, "Password must be at most 32 characters"),
 });
 
 export const updateUserSchema = createUserSchema.partial();
 
 export const loginUserSchema = z.object({
-    email: z.email('Email is required'),
-    password: z.string('Password is required').min(8).max(32),
+  email: z.string("Email is required").email("Invalid email format"),
+  password: z
+    .string("Password is required")
+    .min(8, "Password must be at least 8 characters")
+    .max(32, "Password must be at most 32 characters"),
 });

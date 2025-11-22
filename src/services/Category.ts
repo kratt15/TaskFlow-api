@@ -1,6 +1,8 @@
-import type { CreateCategoryDto, CategoryResponseDto } from '../interfaces/category.js';
+import type {
+  CreateCategoryDto,
+  CategoryResponseDto,
+} from '../interfaces/category.js';
 import { prisma } from '../config/prisma.js';
-import { getUserId } from '../middleware/auth.js';
 export class CategoryService {
   async getAll(userId: string): Promise<CategoryResponseDto[]> {
     try {
@@ -22,9 +24,11 @@ export class CategoryService {
       throw error;
     }
   }
-  async create(userId: string, data: CreateCategoryDto): Promise<CategoryResponseDto> {
+  async create(
+    userId: string,
+    data: CreateCategoryDto
+  ): Promise<CategoryResponseDto> {
     try {
-      ;
       const category = await prisma.category.create({
         data: {
           ...data,
@@ -40,7 +44,10 @@ export class CategoryService {
       throw error;
     }
   }
-  async update(id: string, data: CreateCategoryDto): Promise<CategoryResponseDto> {
+  async update(
+    id: string,
+    data: CreateCategoryDto
+  ): Promise<CategoryResponseDto> {
     try {
       const category = await prisma.category.update({
         where: { id },
@@ -60,6 +67,4 @@ export class CategoryService {
       throw error;
     }
   }
-
-
 }

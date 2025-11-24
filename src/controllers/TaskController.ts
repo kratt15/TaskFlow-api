@@ -12,10 +12,7 @@ export class TaskController {
       const tasks = await taskService.getAll(userId);
       res.status(200).json(tasks);
     } catch (error) {
-      res.status(500).json({
-        error: 'Internal server error',
-        message: error,
-      });
+      ValidationErrorService.handleError(error, res);
     }
   }
   async getById(req: Request, res: Response): Promise<void> {
@@ -23,10 +20,7 @@ export class TaskController {
       const task = await taskService.getById(req.params.id!);
       res.status(200).json(task);
     } catch (error) {
-      res.status(500).json({
-        error: 'Internal server error',
-        message: error,
-      });
+      ValidationErrorService.handleError(error, res);
     }
   }
   async create(req: Request, res: Response): Promise<void> {
@@ -41,10 +35,7 @@ export class TaskController {
       );
       res.status(201).json({ message: 'Task created successfully', task });
     } catch (error) {
-      res.status(500).json({
-        error: 'Internal server error',
-        message: error,
-      });
+      ValidationErrorService.handleError(error, res);
     }
   }
   async update(req: Request, res: Response): Promise<void> {
@@ -66,15 +57,7 @@ export class TaskController {
       );
       res.status(200).json({ message: 'Task updated successfully', task });
     } catch (error) {
-      if (ValidationErrorService.isZodError(error)) {
-        const formattedError = ValidationErrorService.formatZodError(error);
-        res.status(400).json(formattedError);
-        return;
-      }
-      res.status(500).json({
-        error: 'Internal server error',
-        message: error,
-      });
+      ValidationErrorService.handleError(error, res);
     }
   }
   async delete(req: Request, res: Response): Promise<void> {
@@ -82,10 +65,7 @@ export class TaskController {
       await taskService.delete(req.params.id!);
       res.status(204).send({ message: 'Task deleted successfully' });
     } catch (error) {
-      res.status(500).json({
-        error: 'Internal server error',
-        message: error,
-      });
+      ValidationErrorService.handleError(error, res);
     }
   }
 }

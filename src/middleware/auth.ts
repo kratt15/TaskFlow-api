@@ -31,19 +31,19 @@ export const authenticateToken = async (
     res.status(403).json({ error: 'Invalid or expired token' });
   }
 };
-export const getUserId = (req: Request): string => {
-  try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"
-    if (!token) {
-      throw new Error('Token not found in request');
-    }
-    const decoded = authService.verifyToken(token);
-    if (!decoded.userId) {
-      throw new Error('User ID not found in request');
-    }
-    return decoded.userId as string;
-  } catch (error) {
-    throw error;
-  }
-};
+// export const getUserId = (req: Request): string => {
+//   try {
+//     const authHeader = req.headers.authorization;
+//     const token = authHeader && authHeader.split(' ')[1]; // Format: "Bearer TOKEN"
+//     if (!token) {
+//       throw new Error('Token not found in request');
+//     }
+//     const decoded = authService.verifyToken(token);
+//     if (!decoded.userId) {
+//       throw new Error('User ID not found in request');
+//     }
+//     return decoded.userId as string;
+//   } catch (error) {
+//     throw error;
+//   }
+// };

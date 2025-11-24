@@ -1,5 +1,7 @@
 import { Router } from "express";
 import authRoutes from "./auth.js";
+import categoryRoutes from "./category.js";
+import taskRoutes from "./task.js";
 // import { type Request, type Response } from "express";
 
 const router = Router();
@@ -15,5 +17,11 @@ router.get("/health", (req, res) => {
 
 // Routes d'authentification
 router.use("/auth", authRoutes);
+
+// Routes de catégories
+router.use("/categories", categoryRoutes);
+
+// Routes de tâches
+router.use("/tasks", taskRoutes);
 
 export default router;

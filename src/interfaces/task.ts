@@ -10,9 +10,16 @@ export interface Task {
   updatedAt: Date;
 }
 export type CreateTaskDto = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
-export type UpdateTaskDto = Partial<
+
+// Type helper pour permettre explicitement undefined dans les propriétés optionnelles
+// Compatible avec exactOptionalPropertyTypes: true et Zod .partial()
+type PartialWithUndefined<T> = {
+  [P in keyof T]?: T[P] | undefined;
+};
+
+export type UpdateTaskDto = PartialWithUndefined<
   Omit<Task, 'id' | 'createdAt' | 'updatedAt'>
-> & { id: string };
+>;
 export type TaskResponseDto = Omit<Task, ''>;
 export type PublicTaskDto = Pick<Task, 'id' | 'title'>;
 export type TaskFilterDto = {

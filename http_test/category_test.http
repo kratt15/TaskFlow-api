@@ -1,0 +1,226 @@
+### Variables
+@baseUrl = http://localhost:3500
+@apiVersion = /api/v1
+@contentType = application/json
+
+### Variables pour les tokens (seront remplis après login)
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1N2U2YjE5ZC0wODVmLTQ3NTAtOTM1My1mNDUzNTVhMWQ0YTciLCJpYXQiOjE3NjM5NDQ2OTYsImV4cCI6MTc2NjUzNjY5Nn0.ffzFyI_iecuT3_gGp5o90cqwmU15TgMsmGf7uxcdZGk
+
+### Variables pour les IDs (seront remplis après création)
+@categoryId = 
+
+### ============================================
+### TESTS DE CATÉGORIES
+### ============================================
+
+### ============================================
+### CRÉER UNE CATÉGORIE (CREATE)
+### ============================================
+
+### 1. Créer une catégorie - Succès
+# @name createCategory
+POST {{baseUrl}}{{apiVersion}}/categories
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Travail"
+}
+
+### 2. Créer une catégorie - Succès (autre catégorie)
+POST {{baseUrl}}{{apiVersion}}/categories
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Personnel"
+}
+
+### 3. Créer une catégorie - Succès (encore une autre)
+POST {{baseUrl}}{{apiVersion}}/categories
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Urgent"
+}
+
+### 4. Créer une catégorie - Validation erreur (nom trop court)
+POST {{baseUrl}}{{apiVersion}}/categories
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "AB"
+}
+
+### 5. Créer une catégorie - Validation erreur (nom trop long)
+POST {{baseUrl}}{{apiVersion}}/categories
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Ce nom est beaucoup trop long pour être accepté"
+}
+
+### 6. Créer une catégorie - Validation erreur (nom manquant)
+POST {{baseUrl}}{{apiVersion}}/categories
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+}
+
+### 7. Créer une catégorie - Sans token (erreur 401)
+POST {{baseUrl}}{{apiVersion}}/categories
+Content-Type: {{contentType}}
+
+{
+  "name": "SansToken"
+}
+
+### 8. Créer une catégorie - Token invalide (erreur 403)
+POST {{baseUrl}}{{apiVersion}}/categories
+Content-Type: {{contentType}}
+Authorization: Bearer token_invalide_ici
+
+{
+  "name": "TokenInvalide"
+}
+
+### ============================================
+### OBTENIR TOUTES LES CATÉGORIES (GET ALL)
+### ============================================
+
+### 9. Obtenir toutes les catégories - Succès
+GET {{baseUrl}}{{apiVersion}}/categories
+Authorization: Bearer {{authToken}}
+
+### 10. Obtenir toutes les catégories - Sans token (erreur 401)
+GET {{baseUrl}}{{apiVersion}}/categories
+
+### 11. Obtenir toutes les catégories - Token invalide (erreur 403)
+GET {{baseUrl}}{{apiVersion}}/categories
+Authorization: Bearer token_invalide_ici
+
+### ============================================
+### OBTENIR UNE CATÉGORIE PAR ID (GET BY ID)
+### ============================================
+
+### 12. Obtenir une catégorie par ID - Succès
+# Remplacez {{categoryId}} par un ID valide obtenu lors de la création
+GET {{baseUrl}}{{apiVersion}}/categories/{{categoryId}}
+Authorization: Bearer {{authToken}}
+
+### 13. Obtenir une catégorie par ID - ID invalide (erreur 404)
+GET {{baseUrl}}{{apiVersion}}/categories/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{authToken}}
+
+### 14. Obtenir une catégorie par ID - Format UUID invalide
+GET {{baseUrl}}{{apiVersion}}/categories/invalid-id
+Authorization: Bearer {{authToken}}
+
+### 15. Obtenir une catégorie par ID - Sans token (erreur 401)
+GET {{baseUrl}}{{apiVersion}}/categories/{{categoryId}}
+
+### ============================================
+### METTRE À JOUR UNE CATÉGORIE (UPDATE)
+### ============================================
+
+### 16. Mettre à jour une catégorie - Succès
+# Remplacez {{categoryId}} par un ID valide
+PUT {{baseUrl}}{{apiVersion}}/categories/{{categoryId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Travail Modifié"
+}
+
+### 17. Mettre à jour une catégorie - Validation erreur (nom trop court)
+PUT {{baseUrl}}{{apiVersion}}/categories/{{categoryId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "AB"
+}
+
+### 18. Mettre à jour une catégorie - Validation erreur (nom trop long)
+PUT {{baseUrl}}{{apiVersion}}/categories/{{categoryId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Ce nom est beaucoup trop long pour être accepté"
+}
+
+### 19. Mettre à jour une catégorie - ID invalide (erreur 404)
+PUT {{baseUrl}}{{apiVersion}}/categories/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Inexistant"
+}
+
+### 20. Mettre à jour une catégorie - Sans token (erreur 401)
+PUT {{baseUrl}}{{apiVersion}}/categories/{{categoryId}}
+Content-Type: {{contentType}}
+
+{
+  "name": "SansToken"
+}
+
+### ============================================
+### SUPPRIMER UNE CATÉGORIE (DELETE)
+### ============================================
+
+### 21. Supprimer une catégorie - Succès
+# Remplacez {{categoryId}} par un ID valide
+DELETE {{baseUrl}}{{apiVersion}}/categories/{{categoryId}}
+Authorization: Bearer {{authToken}}
+
+### 22. Supprimer une catégorie - ID invalide (erreur 404)
+DELETE {{baseUrl}}{{apiVersion}}/categories/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{authToken}}
+
+### 23. Supprimer une catégorie - Sans token (erreur 401)
+DELETE {{baseUrl}}{{apiVersion}}/categories/{{categoryId}}
+
+### ============================================
+### WORKFLOW COMPLET
+### ============================================
+
+### 24. Workflow complet : Créer -> Obtenir -> Mettre à jour -> Supprimer
+### Étape 1 : Créer une catégorie
+# @name createCategoryWorkflow
+POST {{baseUrl}}{{apiVersion}}/categories
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Workflow Test"
+}
+
+### Étape 2 : Obtenir toutes les catégories
+GET {{baseUrl}}{{apiVersion}}/categories
+Authorization: Bearer {{authToken}}
+
+### Étape 3 : Obtenir la catégorie créée (collez l'ID de la réponse précédente)
+GET {{baseUrl}}{{apiVersion}}/categories/PASTE_CATEGORY_ID_HERE
+Authorization: Bearer {{authToken}}
+
+### Étape 4 : Mettre à jour la catégorie
+PUT {{baseUrl}}{{apiVersion}}/categories/PASTE_CATEGORY_ID_HERE
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "Workflow Test Modifié"
+}
+
+### Étape 5 : Supprimer la catégorie
+DELETE {{baseUrl}}{{apiVersion}}/categories/PASTE_CATEGORY_ID_HERE
+Authorization: Bearer {{authToken}}
+

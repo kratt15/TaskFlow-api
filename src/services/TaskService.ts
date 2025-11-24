@@ -29,23 +29,15 @@ export class TaskService {
   }
   async create(
     userId: string,
-    categoryId: string,
+    categoryId: string | undefined,
     task: CreateTaskDto
   ): Promise<TaskResponseDto> {
     try {
       const newTask = await prisma.task.create({
         data: {
           ...task,
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-          category: {
-            connect: {
-              id: categoryId,
-            },
-          },
+          userId,
+          categoryId: categoryId || null,
         },
       });
       return newTask;
@@ -56,24 +48,21 @@ export class TaskService {
   async update(
     id: string,
     userId: string,
-    categoryId: string,
+    categoryId: string | undefined,
     task: UpdateTaskDto
   ): Promise<TaskResponseDto> {
     try {
+      // Filtrer les propriétés undefined pour compatibilité avec Prisma et exactOptionalPropertyTypes
+      const taskData = Object.fromEntries(
+        Object.entries(task).filter(([_, value]) => value !== undefined)
+      );
+
       const updatedTask = await prisma.task.update({
         where: { id },
         data: {
-          ...task,
-          user: {
-            connect: {
-              id: userId,
-            },
-          },
-          category: {
-            connect: {
-              id: categoryId,
-            },
-          },
+          ...taskData,
+          userId,
+          categoryId: categoryId !== undefined ? categoryId : null,
         },
       });
       return updatedTask!;

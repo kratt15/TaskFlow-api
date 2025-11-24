@@ -4,7 +4,7 @@
 @contentType = application/json
 
 ### Variables pour les tokens (seront remplis après login)
-@authToken = 
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1N2U2YjE5ZC0wODVmLTQ3NTAtOTM1My1mNDUzNTVhMWQ0YTciLCJpYXQiOjE3NjM3MjkxMjgsImV4cCI6MTc2NjMyMTEyOH0.NmkZdu62OXsi7S64l8NvgatDCcdLgPHls1_gyiCsYOg
 
 ### ============================================
 ### TESTS D'AUTHENTIFICATION

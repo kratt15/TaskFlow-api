@@ -1,4 +1,5 @@
 // src/config/prisma.ts
+import 'dotenv/config';
 import { PrismaClient } from '../generated/prisma/client.js';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
@@ -8,10 +9,16 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error('DATABASE_URL is not defined in environment variables');
+}
+
 const pool = new Pool({
   max: 25,
   min: 7,
-  connectionString: process.env.DATABASE_URL,
+  connectionString: connectionString,
 });
 
 const adapter = new PrismaPg(pool);

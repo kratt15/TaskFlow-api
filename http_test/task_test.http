@@ -1,0 +1,373 @@
+### Variables
+@baseUrl = http://localhost:3500
+@apiVersion = /api/v1
+@contentType = application/json
+
+### Variables pour les tokens (seront remplis après login)
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1N2U2YjE5ZC0wODVmLTQ3NTAtOTM1My1mNDUzNTVhMWQ0YTciLCJpYXQiOjE3NjM3MjkxMjgsImV4cCI6MTc2NjMyMTEyOH0.NmkZdu62OXsi7S64l8NvgatDCcdLgPHls1_gyiCsYOg
+
+### Variables pour les IDs (seront remplis après création)
+@taskId = 
+@categoryId = bd3d9eeb-596e-41d5-b319-3b60860aa9d7
+
+### ============================================
+### TESTS DE TÂCHES
+### ============================================
+
+### ============================================
+### CRÉER UNE TÂCHE (CREATE)
+### ============================================
+
+### 1. Créer une tâche - Succès (NOT_STARTED, LOW)
+# @name createTask
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Faire les courses",
+  "description": "Acheter du lait et du pain",
+  "status": "NOT_STARTED",
+  "level": "LOW",
+  "categoryId": "{{categoryId}}"
+}
+
+### 2. Créer une tâche - Succès (IN_PROGRESS, MEDIUM)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Réviser le code",
+  "description": "Vérifier les tests unitaires",
+  "status": "IN_PROGRESS",
+  "level": "MEDIUM",
+  "categoryId": "{{categoryId}}"
+}
+
+### 3. Créer une tâche - Succès (COMPLETED, HIGH)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Déployer l'application",
+  "description": "Mettre en production",
+  "status": "COMPLETED",
+  "level": "HIGH",
+  "categoryId": "{{categoryId}}"
+}
+
+### 4. Créer une tâche - Validation erreur (titre trop court)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "AB",
+  "description": "Description valide",
+  "status": "NOT_STARTED",
+  "level": "LOW",
+  "categoryId": "{{categoryId}}"
+}
+
+### 5. Créer une tâche - Validation erreur (titre trop long)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Ce titre est beaucoup trop long pour être accepté par le système",
+  "description": "Description valide",
+  "status": "NOT_STARTED",
+  "level": "LOW",
+  "categoryId": "{{categoryId}}"
+}
+
+### 6. Créer une tâche - Validation erreur (description trop courte)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Titre valide",
+  "description": "AB",
+  "status": "NOT_STARTED",
+  "level": "LOW",
+  "categoryId": "{{categoryId}}"
+}
+
+### 7. Créer une tâche - Validation erreur (description trop longue)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Titre valide",
+  "description": "Cette description est beaucoup trop longue pour être acceptée par le système de validation",
+  "status": "NOT_STARTED",
+  "level": "LOW",
+  "categoryId": "{{categoryId}}"
+}
+
+### 8. Créer une tâche - Validation erreur (status invalide)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Titre valide",
+  "description": "Description valide",
+  "status": "invalid_status",
+  "level": "LOW",
+  "categoryId": "{{categoryId}}"
+}
+
+### 9. Créer une tâche - Validation erreur (level invalide)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Titre valide",
+  "description": "Description valide",
+  "status": "NOT_STARTED",
+  "level": "invalid_level",
+  "categoryId": "{{categoryId}}"
+}
+
+### 10. Créer une tâche - Validation erreur (categoryId manquant)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Titre valide",
+  "description": "Description valide",
+  "status": "NOT_STARTED",
+  "level": "LOW"
+}
+
+### 11. Créer une tâche - Validation erreur (categoryId invalide - pas un UUID)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Titre valide",
+  "description": "Description valide",
+  "status": "NOT_STARTED",
+  "level": "LOW",
+  "categoryId": "invalid-uuid"
+}
+
+### 12. Créer une tâche - Sans token (erreur 401)
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+
+{
+  "title": "Titre valide",
+  "description": "Description valide",
+  "status": "NOT_STARTED",
+  "level": "LOW",
+  "categoryId": "{{categoryId}}"
+}
+
+### ============================================
+### OBTENIR TOUTES LES TÂCHES (GET ALL)
+### ============================================
+
+### 13. Obtenir toutes les tâches - Succès
+GET {{baseUrl}}{{apiVersion}}/tasks
+Authorization: Bearer {{authToken}}
+
+### 14. Obtenir toutes les tâches - Sans token (erreur 401)
+GET {{baseUrl}}{{apiVersion}}/tasks
+
+### 15. Obtenir toutes les tâches - Token invalide (erreur 403)
+GET {{baseUrl}}{{apiVersion}}/tasks
+Authorization: Bearer token_invalide_ici
+
+### ============================================
+### OBTENIR UNE TÂCHE PAR ID (GET BY ID)
+### ============================================
+
+### 16. Obtenir une tâche par ID - Succès
+# Remplacez {{taskId}} par un ID valide obtenu lors de la création
+GET {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Authorization: Bearer {{authToken}}
+
+### 17. Obtenir une tâche par ID - ID invalide (erreur 404)
+GET {{baseUrl}}{{apiVersion}}/tasks/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{authToken}}
+
+### 18. Obtenir une tâche par ID - Format UUID invalide
+GET {{baseUrl}}{{apiVersion}}/tasks/invalid-id
+Authorization: Bearer {{authToken}}
+
+### 19. Obtenir une tâche par ID - Sans token (erreur 401)
+GET {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+
+### ============================================
+### METTRE À JOUR UNE TÂCHE (UPDATE)
+### ============================================
+
+### 20. Mettre à jour une tâche - Succès (tous les champs)
+# Remplacez {{taskId}} par un ID valide
+PUT {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Tâche modifiée",
+  "description": "Description modifiée",
+  "status": "IN_PROGRESS",
+  "level": "HIGH",
+  "categoryId": "{{categoryId}}"
+}
+
+### 21. Mettre à jour une tâche - Succès (seulement le titre)
+PUT {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Nouveau titre",
+  "categoryId": "{{categoryId}}"
+}
+
+### 22. Mettre à jour une tâche - Succès (seulement le status)
+PUT {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "status": "COMPLETED",
+  "categoryId": "{{categoryId}}"
+}
+
+### 23. Mettre à jour une tâche - Succès (seulement le level)
+PUT {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "level": "MEDIUM",
+  "categoryId": "{{categoryId}}"
+}
+
+### 24. Mettre à jour une tâche - Validation erreur (categoryId manquant)
+PUT {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Titre modifié"
+}
+
+### 25. Mettre à jour une tâche - Validation erreur (titre trop court)
+PUT {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "AB",
+  "categoryId": "{{categoryId}}"
+}
+
+### 26. Mettre à jour une tâche - Validation erreur (status invalide)
+PUT {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "status": "invalid_status",
+  "categoryId": "{{categoryId}}"
+}
+
+### 27. Mettre à jour une tâche - ID invalide (erreur 404)
+PUT {{baseUrl}}{{apiVersion}}/tasks/00000000-0000-0000-0000-000000000000
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Inexistant",
+  "categoryId": "{{categoryId}}"
+}
+
+### 28. Mettre à jour une tâche - Sans token (erreur 401)
+PUT {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Content-Type: {{contentType}}
+
+{
+  "title": "SansToken",
+  "categoryId": "{{categoryId}}"
+}
+
+### ============================================
+### SUPPRIMER UNE TÂCHE (DELETE)
+### ============================================
+
+### 29. Supprimer une tâche - Succès
+# Remplacez {{taskId}} par un ID valide
+DELETE {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+Authorization: Bearer {{authToken}}
+
+### 30. Supprimer une tâche - ID invalide (erreur 404)
+DELETE {{baseUrl}}{{apiVersion}}/tasks/00000000-0000-0000-0000-000000000000
+Authorization: Bearer {{authToken}}
+
+### 31. Supprimer une tâche - Sans token (erreur 401)
+DELETE {{baseUrl}}{{apiVersion}}/tasks/{{taskId}}
+
+### ============================================
+### WORKFLOW COMPLET
+### ============================================
+
+### 32. Workflow complet : Créer -> Obtenir -> Mettre à jour -> Supprimer
+### Étape 1 : Créer une tâche
+# @name createTaskWorkflow
+POST {{baseUrl}}{{apiVersion}}/tasks
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Tâche Workflow",
+  "description": "Description workflow",
+  "status": "NOT_STARTED",
+  "level": "LOW",
+  "categoryId": "{{categoryId}}"
+}
+
+### Étape 2 : Obtenir toutes les tâches
+GET {{baseUrl}}{{apiVersion}}/tasks
+Authorization: Bearer {{authToken}}
+
+### Étape 3 : Obtenir la tâche créée (collez l'ID de la réponse précédente)
+GET {{baseUrl}}{{apiVersion}}/tasks/PASTE_TASK_ID_HERE
+Authorization: Bearer {{authToken}}
+
+### Étape 4 : Mettre à jour la tâche (changer le status)
+PUT {{baseUrl}}{{apiVersion}}/tasks/PASTE_TASK_ID_HERE
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "status": "IN_PROGRESS",
+  "categoryId": "{{categoryId}}"
+}
+
+### Étape 5 : Mettre à jour la tâche (marquer comme complétée)
+PUT {{baseUrl}}{{apiVersion}}/tasks/PASTE_TASK_ID_HERE
+Content-Type: {{contentType}}
+Authorization: Bearer {{authToken}}
+
+{
+  "status": "COMPLETED",
+  "categoryId": "{{categoryId}}"
+}
+
+### Étape 6 : Supprimer la tâche
+DELETE {{baseUrl}}{{apiVersion}}/tasks/PASTE_TASK_ID_HERE
+Authorization: Bearer {{authToken}}
+

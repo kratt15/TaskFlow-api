@@ -4,10 +4,10 @@ import type {
   LoginDto,
   User,
   UserResponseDto,
-} from "../interfaces/user.js";
-import { prisma } from "../config/prisma.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+} from '../interfaces/user.js';
+import { prisma } from '../config/prisma.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 export class AuthService {
   async register(data: CreateUserDto): Promise<UserResponseDto> {
     try {
@@ -33,14 +33,14 @@ export class AuthService {
         where: { email: data.email },
       });
       if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
       const isPasswordValid = await bcrypt.compare(
         data.password,
         user.password
       );
       if (!isPasswordValid) {
-        throw new Error("Invalid password");
+        throw new Error('Invalid password');
       }
       const token = this.generateToken(user.id);
       // Retourner l'utilisateur sans le mot de passe
@@ -56,13 +56,13 @@ export class AuthService {
   async getMe(userId: string): Promise<UserResponseDto> {
     try {
       if (!userId) {
-        throw new Error("User ID is required");
+        throw new Error('User ID is required');
       }
       const user = await prisma.user.findUnique({
         where: { id: userId },
       });
       if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
       // Retourner l'utilisateur sans le mot de passe
       const { password, ...userWithoutPassword } = user;
@@ -74,23 +74,29 @@ export class AuthService {
   private generateToken(userId: string): string {
     const secret = process.env.JWT_SECRET as string;
     if (!secret) {
-      throw new Error("JWT_SECRET is not set");
+      throw new Error('JWT_SECRET is not set');
     }
     const expiresIn = process.env.JWT_EXPIRES_IN as string;
     if (!expiresIn) {
-      throw new Error("JWT_EXPIRES_IN is not set");
+      throw new Error('JWT_EXPIRES_IN is not set');
     }
     return jwt.sign({ userId }, secret, { expiresIn } as jwt.SignOptions);
   }
   verifyToken(token: string): { userId: string } {
     const secret = process.env.JWT_SECRET as string;
     if (!secret) {
-      throw new Error("JWT_SECRET is not set");
+      throw new Error('JWT_SECRET is not set');
     }
     try {
       return jwt.verify(token, secret) as { userId: string };
     } catch (error) {
-      throw new Error("Invalid token");
+      throw new Error('Invalid token');
+    }
+  }
+  async logout(): Promise<void> {
+    try {
+    } catch (error) {
+      throw error;
     }
   }
 }
